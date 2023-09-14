@@ -1,0 +1,232 @@
+= Zadania
+
+== Instalacja i konfiguracja
+
+=== Zadanie 1. Instalacja i uruchomienie Jenkinsa bezpośrednio w systemie Linux
+
+. Zainstaluj i uruchom Jenkinsa
+
+include::install-windows.adoc[leveloffset=3]
+include::install-macos.adoc[leveloffset=3]
+include::install-linux.adoc[leveloffset=3]
+include::first-configuration.adoc[leveloffset=3]
+
+=== Zadanie 2. Instalacja i konfiguracja pluginów
+
+. Zainstaluj pluginy:
+* Git
+* Eclipse Temurin installer
+* Pipeline
+* Workspace Cleanup
+. Skonfiguruj narzędzia
+* Dodaj instaler JDK w wersji `jdk-17.0.8.1+1` i nazwij go `jdk-17`
+* Dodaj instaler Mavena w wersji `3.9.4` i nazwij go `maven-3`
+
+== Integracja z Git
+
+=== Zadanie 1. Pobranie repozytorium
+. Stwórz zadanie o nazwie `github-fetch`
+. Pobierz jakiekolwiek repozytorium z GitHub, np. https://github.com/spring-projects/spring-petclinic[pet-clinic]
+. Sprawdź workspace czy faktycznie został pobrany kod
+
+=== Zadanie 2. Zmiana brancha
+. Stwórz nowe zadanie o nazwie `change-branch`
+. Pobierz jakiekolwiek repozytorium z GitHub, np. https://github.com/spring-projects/spring-petclinic[pet-clinic]
+. Zmień brancha na inny
+. Sprawdź workspace czy faktycznie został pobrany kod z odpowiedniego brancha
+
+== Integracja z Maven
+
+=== Zadanie 1. Aplikacja mavenowa
+. Stwórz nowe repozytorium na GitHub
+. Wrzuć kod przykładowy projekt ze strony https://start.spring.io
+
+=== Zadanie 2. Budowanie aplikacji mavenowej
+. Stwórz zadnie o nazwie `maven-spring-base`
+. Ściągnij kod z poprzedniego repozytorium
+. Wykonaj budowanie projektu za pomocą maven
+
+=== Zadanie 3. Releasowanie aplikacji mavenowej
+. Stwórz zadnie o nazwie `maven-spring-base-release`
+. Ściągnij kod z poprzedniego repozytorium
+. Wykonaj releasowanie projektu za pomocą maven
+
+== Podstawowy Pipeline
+
+=== Zadanie 1. Uruchomienie pierwszego Pipeline
+
+. Stwórz nowy pipeline o nazwie `base-echo`
+. Jako pipeline wklej
+
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'echo Hello World!'
+            }
+        }
+    }
+}
+----
+
+[start=3]
+. Uruchom pipeline
+. Sprawdź logi wykonania pipeline i sprawdź, czy pojawił się napis `Hello World!`
+
+=== Zadanie 2. Generowanie plików
+
+. Dodaj w pipeline z poprzedniego zadania utworzenie pliku z losową nazwą, np. `sh "uuidgen | xargs touch"`
+. Uruchom pipeline dwukrotnie
+. Sprawdź co znajduje się w workspace
+
+=== Zadanie 3. Wyczyszczenie Workspace
+
+. Zmodyfikuj pipeline z poprzedniego zadania, dodając krok czyszczący Workspace, używając pluginu Workspace Cleanup
+. Uruchom pipeline dwukrotnie
+. Sprawdź co znajduje się w workspace
+
+=== Zadanie 4. Budowanie aplikacji Spring Boot
+
+. Stwórz nowy pipeline o nazwie `pet-clinic-build`
+. Na podstawie pipeline poprzedniego zadania stwórz pipeline, który za pomocą komendy `mvn clean verify` zbuduje projekt https://github.com/spring-projects/spring-petclinic[pet-clinic]
+
+=== Zadanie 5. Testy
+
+. Zmodyfikuj pipeline z poprzedniego zadania dodając do niego obsługę JUnit
+. Uruchom pipeline
+. Obejrzyj jak wyglądają testy JUnit
+
+=== Zadanie 6. Podział na stage
+
+. Napisany przez siebie pipeline z poprzedniego zadania podziel na 3 stage: ['Clean', 'Checkout', 'Build']
+
+=== Zdanie 7. Notyfikacja na Slacku
+
+. Rozszerz napisany przez siebie pipeline z poprzedniego zadania o wysłanie notyfikacji na Slacku
+. Notyfikacje mają się wysyłać w momencie pozytywnego buildu/negatywnego/niestabilnego
+. Dodaj kanał na slacku o nazwie `jenkins-imie-nazwisko`
+. Uruchom pipeline
+. Sprawdź, czy notyfikacja została wysłana
+. Zmodyfikuj pipeline w taki sposób, żeby komunikat na Slacka zawierał parametry `BUILD_TAG` i `BUILD_URL`
+
+=== Zadanie 8. Zmienne środowiskowe
+
+. Stwórz nowy pipeline o nazwie `base-curl-with-credentials`
+. Wywołaj w nim `sh "curl -i https://httpbin.org/basic-auth/foo/bar"`
+. Uruchom pipeline
+. Sprawdź wynik
+. Dodaj credentiale user: `foo`, password: `bar`
+. Użyj credentiali jako zmienne środowiskowe
+. Adres również umieść w zmiennych środowiskowych
+. Wywołaj `curla` z autoryzacją `sh "curl -i -u 'user:pass' https://httpbin.org/basic-auth/foo/bar"`
+. Uruchom pipeline
+. Sprawdź logi
+. Doprowadź do sytuacji, kiedy Jenkins nie będzie zwracał warna
+. Zmień credentiale ze zmiennych środowiskowych na dyrektywę `withCredentials`
+. Uruchom pipeline
+
+=== Zadanie 9. Parametry wejściowe
+
+. Stwórz nowy pipeline o nazwie `base-echo-with-parameters`
+. Dodaj parametr wejściowy do pipeline
+. Wyświetl parametr wejściowy w konsoli (jak w Zadaniu 1)
+
+== Pipeline wewnątrz repozytorium
+
+=== Zadania 1. Dodanie Pipeline do repozytorium
+
+. Zrób fork https://github.com/rechandler12/szkolenie-cicd-jenkins-gitlab-example[repozytorium]
+. Dodaj plik `Jenkinsfile` do repozytorium z zawartością z Zadania 7 z poprzedniego modułu
+. Stwórz pipeline o nazwie `example-build`
+. Uruchom pipeline
+
+=== Zadanie 2. Pipeline w osobnym repozytorium
+
+. Stwórz repozytorium na GitHub
+. Dodaj plik `Jenkinsfile` do repozytorium z zawartością z poprzedniego zadania
+. Stwórz pipeline o nazwie `example-external-build`, w którym konfiguracja będzie brana z repozytorium, które stworzyłeś, ale będzie budowany projekt, z poprzedniego zadania
+
+=== Zadanie 3. Warunkowe wykonanie kroków
+
+. Dodaj do pipeline klauzulę `when`, żeby wszystkie kroki były pomijane w momencie, jeśli ostatni commit zaczyna się od `[ci skip]`
+. Zrób commita zaczynającego się od `[ci skip]`
+. Uruchom pipeline
+. Sprawdź w logach czy kroki się wykonały
+
+=== Zadanie 4. SCM Skip Plugin
+
+. Zrób to samo co w poprzednim zadaniu, ale z użyciem pluginu SCM Skip
+
+=== Zadanie 5. Triggery
+
+. Dodaj do któregoś z poprzednich pipeline trigger, który będzie wywoływał ten pipeline co 1 minutę
+. Sprawdź efekty
+
+=== Zadanie 6. Active Choices i Scriptler
+
+. Zainstaluj plugin `Active Choices`
+. Zainstaluj plugin `Scriptler`
+. Stwórz aktywne pola wyboru
+. Możesz wzorować się na https://plugins.jenkins.io/uno-choice/#plugin-content-example, ale proponuję zrobić własne pola wyboru
+
+
+== Połączmy to z Dockerem
+
+=== Zadanie 1. Zbuduj obraz Dockerowy za pomocą mavena
+
+. Stwórz nowy pipeline o nazwie `pet-clinic-build-docker`
+. Użyj pipeline z modułu Podstawowy Pipeline Zadanie 4 i zmień komendę z `mvn clean verify` na `mvn clean spring-boot:build-image`
+. Uruchom pipeline
+. Spójrz w logi spróbuj doprowadzić go do działania
+
+=== Zadanie 2. Zbuduj obraz Dockerowy za pomocą pluginu
+
+. Stwórz pipeline o nazwie `docker-simple-build`
+. Użyj Dockerfile z https://github.com/rechandler12/szkolenie-cicd-jenkins-gitlab katalog `docker-pipeline`
+. Zbuduj obraz dockerowy za pomocą pluginu https://plugins.jenkins.io/docker-workflow/[Docker Pipeline]
+
+=== Zadanie 3. Użyj Docker Agenta do zbudowania aplikacji pet-clinic
+
+. Stwórz pipeline o nazwie `pet-clinic-build-docker-without-dind`
+. Użyj pipeline z modułu Podstawowy Pipeline Zadanie 4
+. Usuń sekcję tools
+. Zmień sekcję agents, żeby użyć obrazu: `maven:3.9.2-eclipse-temurin-17`
+
+=== Zadanie 4. Użyj Docker Agenta do zbudowania obrazu Dockerowego aplikacji pet-clinic
+
+. Stwórz pipeline o nazwie `pet-clinic-build-docker-with-dind`
+. Użyj pipeline z poprzedniego zadania
+. Zmień komendę `mvn clean verify` na `mvn clean spring-boot:build-image`
+. Spróbuj doprowadzić do tego, żeby obraz się zbudował
+
+== Konfiguracja dodatkowego Workera
+
+=== Zadanie 1. Skonfigurowanie 2 dodatkowych Workerów
+
+. Zainstaluj plugin `Command Agent Launcher`
+. Dodaj 2 dodatkowe workery
+* Liczba executorów: 1
+* Labelki: `workerA` i `workerB`
+* Remote root directory: `/home/jenkins/agent`
+* Launch method: Launch agent via execution of command on the master
+* Launch command: `docker run -i --rm --name agent --init jenkins/agent java -jar /usr/share/jenkins/agent.jar`
+
+=== Zadanie 2. Wyłącz executory na masterach
+
+. Ustaw liczbę executorów na masterze na 0
+. Puść pipeline, które masz już skonfigurowane
+. Sprawdź, jaki jest efekt
+
+=== Zadanie 3. Uruchamianie budowania na konkretnym workerze
+
+. Znajdź pipeline, który zakończył się sukcesem
+. Ustaw sekcje `agent` na wybranie workera po odpowiedniej labelce
+. Uruchom pipeline
+. Sprawdź, czy faktycznie się uruchomił na danym workerze
+. Usuń worker z tą labelką
+. Ponownie uruchom pipeline
+. Jaki efekt otrzymałeś?
