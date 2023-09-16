@@ -126,3 +126,23 @@ build-job:
 
 . Dopisz zapisywanie artefaktu
 . Sprawdź, czy artefakt się zapisał
+
+=== Zadanie 9. Wypchnięcie obrazu dockerowego do registry
+
+. Zbuduj obraz dockerowy za pomocą `mvn clean spring-boot:build-image`
+. Wypchnij obraz do registry dockerowego zawartego w GitLab
+
+=== Zadanie 10. Reużywanie jobów
+
+. Wynieś część joba do ukrytego joba
+. Używając `extend` doprowadź do takiego samego działania jak przed wyniesieniem
+
+=== Zadanie 11. Remote pipeline
+
+. Wynieś cały pipeline do innego repozytorium
+. Za pomocą `include` wykonaj pipeline w pierwotnym repozytorium
+
+=== Zadanie 12. Docker runner DIND
+
+. Używając tagów wymuś budowanie na runnerze dockerowym
+. Spróbuj zbudować pipeline z Zadania 9.
